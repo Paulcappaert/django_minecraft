@@ -10,4 +10,6 @@ urlpatterns = [
         template_name='core/logout.html'), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('api/confirm/', views.confirm, name='confirm'),
+    path('api/is-confirmed/', views.is_confirmed, name='is-confirmed'),
 ]

@@ -1,4 +1,7 @@
 {% extends "core/base.html" %}
 {% block content %}
     <h1>Chess</h1>
+    {% if user.is_authenticated %}
+    <p>{{user.is_confirmed}}</p>
+    {% endif %}
 {% endblock content %}
