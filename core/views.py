@@ -5,6 +5,8 @@ from .forms import UserRegisterForm, UserUpdateForm
 from mysite.settings import MINECRAFT_SECRET
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 def home(request):
@@ -60,3 +62,24 @@ def is_confirmed(request):
     else:
         result = {'is_confirmed': False}
     return JsonResponse(result)
+
+@csrf_exempt
+def receieve_chat(request):
+    secret = request.POST['secret']
+    username = request.POST['username']
+    message = request.POST['message']
+
+    if secret == MINECRAFT_SECRET:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+        'chat', 
+        {
+            "type": "chat_message",
+            'message': {
+                'username': username,
+                'message': message,
+            }
+        })
+        return HttpResponse()
+    return HttpResponse(status=403)
+    
